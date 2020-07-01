@@ -1,2 +1,4 @@
-https://play.google.com/store/apps/details?id=com.nexon.v4kr&hl=ko&showAllReviews=true
-https://play.google.com/store/apps/details?id=com.netmarble.fgok&hl=ko&showAllReviews=true
+#https://play.google.com/store/apps/details?id=com.nexon.v4kr&hl=ko&showAllReviews=true
+#https://play.google.com/store/apps/details?id=com.netmarble.fgok&hl=ko&showAllReviews=true
+# 아프리카 티비
+https://play.google.com/store/apps/details?id=kr.co.nowcom.mobile.afreeca&hl=ko&showAllReviews=true

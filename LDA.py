@@ -91,6 +91,7 @@ saved_model = joblib.dump(dtm, 'LDA.pkl')
 
 names = tf_vect.get_feature_names()
 topics_word = dict()
+
 # 주제에 포함된 단어 갯수
 n_words = 20 #20
 # 주제에 속한 단어 topics_word에 저장

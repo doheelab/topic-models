@@ -48,7 +48,7 @@ def getNVM_lemma(text):
     return pos
 
 reviews = []
-for filePath in searchFiles('/home/dohee/kaggle/topic-models/crawling/Reviews'):
+for filePath in searchFiles('/data/kaggle/topic-models/crawling/Reviews'):
     review = pd.read_csv(filePath, encoding = 'utf-8', engine='python')
     reviews.append(review)
 docs = pd.concat(reviews, ignore_index = True)
@@ -62,18 +62,19 @@ docs = docs[docs['평점']==1]
 
 #%%
 
-# uni-gram
+import numpy as np
 
-#tf_vect = CountVectorizer(tokenizer=getNVM_lemma, min_df = 2)
+# uni-gram
 tf_vect = CountVectorizer(tokenizer=getNVM_lemma, ngram_range=(1,1), min_df = 2)
 
 dtm = tf_vect.fit_transform(docs['내용']) # 문서-단어 행렬
 vocab = dict()
 for idx, word in enumerate(tf_vect.get_feature_names()):
     vocab[word] = dtm.getcol(idx).sum()
-words = sorted(vocab.items(), key=lambda x:x[1], reverse = True)
-max = 20
+    
 
+words = sorted(vocab.items(), key=lambda x:x[1], reverse = True)
+max = 10
 
 # Remove stopwords
 StopWords = ['게임', '너무', '나오', '생각', '만들', '많이', '정말', '아니', '정도', '아직', '괜찮', '드리']
@@ -86,6 +87,21 @@ ax = plt.subplot()
 ax.set_xticks(range(max))
 ax.set_xticklabels([i[0] for i in words[:max]], rotation = 30)
 plt.show()
+
+
+#%%
+
+
+word = '와이파이'
+word_list = tf_vect.get_feature_names()
+idx = word_list.index(word)
+
+print("단어:", tf_vect.get_feature_names()[idx])
+max_idx = np.argmax(dtm.getcol(idx).toarray())
+print("반복횟수:", dtm.getcol(idx).toarray()[max_idx])
+print("대표리뷰:", docs['내용'].iloc[max_idx])
+
+
 
 #%%
 

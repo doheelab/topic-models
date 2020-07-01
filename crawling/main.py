@@ -31,6 +31,7 @@ def read_urlList(file_path):
     url_List = []
     with open(file_path, 'r', encoding='utf-8') as file:
         url_List = file.readlines()
+    url_List = [item for item in url_List if item[0]!='#']
     return url_List
 
 def main():

@@ -54,7 +54,8 @@ class Crawler(object):
             except Exception:
                 continue
 
-        while(errTime < 30 and successTime < 20):#더보기 버튼을 20번 누를 때 까지 반복
+        while(errTime < 30 and successTime < 50):#더보기 버튼을 20번 누를 때 까지 반복
+            print("successTime {}".format(successTime))
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             self.driver.implicitly_wait(0.05)
             try:                                    
