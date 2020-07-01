@@ -11,6 +11,12 @@ import matplotlib.font_manager as fm
 
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
+# plot configuration
+path = '/usr/share/fonts/truetype/nanum/NanumGothic.ttf'
+font_name = fm.FontProperties(fname=path, size=50).get_name()
+plt.rc('font', family=font_name)
+plt.rcParams["font.size"] = 14
+plt.rcParams["figure.figsize"] = (12,8)
 
 def searchFiles(path):
     filelist = []
@@ -25,8 +31,8 @@ def getNVM_lemma(text):
     parsed = tokenizer.parse(text)
     word_tag = [w for w in parsed.split("\n")]
     pos = []
-    # nouns, verb, adjective, 긍정/부정 지정사
     tags = ['NNG', 'NNP', 'VV', 'VA', 'VX', 'VCP', 'VCN', 'MAG']
+    # nouns, verb, adjective, 긍정/부정 지정사
     for word_ in word_tag[:-2]:
         word = word_.split("\t")
         tag = word[1].split(",")
@@ -42,18 +48,50 @@ def getNVM_lemma(text):
     return pos
 
 reviews = []
-for filePath in searchFiles('/home/dohee/kaggle/recommend/Playstore_Crawler/Reviews'):
+for filePath in searchFiles('/home/dohee/kaggle/topic-models/crawling/Reviews'):
     review = pd.read_csv(filePath, encoding = 'utf-8', engine='python')
     reviews.append(review)
 docs = pd.concat(reviews, ignore_index = True)
 
 # positive
-#docs = docs[docs['평점']>3]
+#docs = docs[docs['평점']==5]
 
 # negative
-#docs = docs[docs['평점']<2]
+docs = docs[docs['평점']==1]
 
-tf_vect = CountVectorizer(tokenizer=getNVM_lemma, min_df = 2)
+
+#%%
+
+# uni-gram
+
+#tf_vect = CountVectorizer(tokenizer=getNVM_lemma, min_df = 2)
+tf_vect = CountVectorizer(tokenizer=getNVM_lemma, ngram_range=(1,1), min_df = 2)
+
+dtm = tf_vect.fit_transform(docs['내용']) # 문서-단어 행렬
+vocab = dict()
+for idx, word in enumerate(tf_vect.get_feature_names()):
+    vocab[word] = dtm.getcol(idx).sum()
+words = sorted(vocab.items(), key=lambda x:x[1], reverse = True)
+max = 20
+
+
+# Remove stopwords
+StopWords = ['게임', '너무', '나오', '생각', '만들', '많이', '정말', '아니', '정도', '아직', '괜찮', '드리']
+words = [item for item in words if item[0] not in StopWords][:max]
+
+plt.bar(range(max), [i[1] for i in words[:max]])
+plt.title('Frequency Top 20')
+plt.xlabel('Word')
+ax = plt.subplot()
+ax.set_xticks(range(max))
+ax.set_xticklabels([i[0] for i in words[:max]], rotation = 30)
+plt.show()
+
+#%%
+
+# bi-gram
+
+#tf_vect = CountVectorizer(tokenizer=getNVM_lemma, min_df = 2)
 tf_vect = CountVectorizer(tokenizer=getNVM_lemma, ngram_range=(2,2), min_df = 2)
 
 dtm = tf_vect.fit_transform(docs['내용']) # 문서-단어 행렬
@@ -62,6 +100,11 @@ for idx, word in enumerate(tf_vect.get_feature_names()):
     vocab[word] = dtm.getcol(idx).sum()
 words = sorted(vocab.items(), key=lambda x:x[1], reverse = True)
 max = 20
+
+# Remove stopwords
+StopWords = ['즐기 게임', '나오 나오', '부탁 드리', '게임 게임', '게임 만들', '만들 게임', '게임 자체', '나오 게임', '과금 과금']
+words = [item for item in words if item[0] not in StopWords][:max]
+
 plt.bar(range(max), [i[1] for i in words[:max]])
 plt.title('Frequency Top 20')
 plt.xlabel('Word')

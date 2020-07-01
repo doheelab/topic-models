@@ -82,7 +82,7 @@ def getNVM_lemma(text):
 
 def main():
     reviews = []
-    for filePath in searchFiles('/home/dohee/kaggle/recommend/Playstore_Crawler/Reviews'):
+    for filePath in searchFiles('/home/dohee/kaggle/topic-models/crawling/Reviews'):
         review = pd.read_csv(filePath, encoding = 'utf-8', engine='python')
         reviews.append(review)
     docs = pd.concat(reviews, ignore_index = True)

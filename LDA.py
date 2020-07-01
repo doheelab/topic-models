@@ -43,9 +43,8 @@ def searchFiles(path):
 
 
 #%%
-
+"""
 # LDA: try 1
-
 
 tf_vect = TfidfVectorizer(tokenizer=getNVM_lemma, ngram_range=(1,1), min_df = 2, max_df = 20)
 dtm = tf_vect.fit_transform(docs['내용'])
@@ -62,15 +61,16 @@ for idx, topic in enumerate(lda.components_):
         vocab.append((names[i], topic[i].round(2)))
     print("주제 %d:" % (idx + 1))
     print([(names[i], topic[i].round(2)) for i in topic.argsort()[:-(30-1):-1]])
+"""
 
 #%%
 
-for filePath in searchFiles('/home/dohee/kaggle/recommend/Playstore_Crawler/Reviews'):
+reviews = []
+
+for filePath in searchFiles('/home/dohee/kaggle/topic-models/crawling/Reviews'):
     review = pd.read_csv(filePath, encoding = 'utf-8', engine='python')
     reviews.append(review)
-docs = pd.concat(reviews, ignore_index = True)
 
-    
 # LDA: try 2
 docs = pd.concat(reviews, ignore_index = True)
 docs = docs[docs['평점']>3]
@@ -80,7 +80,7 @@ docs['내용'] = docs.apply(lambda x: x['내용']*int(np.log2(2+x['공감수']))
 #tf_vect = CountVectorizer(tokenizer=getNVM_lemma, ngram_range=(1, 2), min_df = 2, max_df = 6000,
 #                          max_features= 25000)
 
-tf_vect = CountVectorizer(tokenizer=getNVM_lemma, ngram_range=(1, 2), min_df = 2, max_df = 1000,
+tf_vect = CountVectorizer(tokenizer=getNVM_lemma, ngram_range=(1, 2), min_df = 2, max_df = 6000,
                           max_features= 25000)
 
 dtm = tf_vect.fit_transform(docs['내용'])
