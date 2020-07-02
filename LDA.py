@@ -67,7 +67,7 @@ for idx, topic in enumerate(lda.components_):
 
 reviews = []
 
-for filePath in searchFiles('/home/dohee/kaggle/topic-models/crawling/Reviews'):
+for filePath in searchFiles('/data/kaggle/topic-models/crawling/Reviews'):
     review = pd.read_csv(filePath, encoding = 'utf-8', engine='python')
     reviews.append(review)
 
